@@ -1,5 +1,5 @@
-import React from 'react';
-import { SafeAreaView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
 const Header = () => (
   <View style={styles.header}>
@@ -19,11 +19,13 @@ const JournalPrompt = () => (
   </View>
 );
 
-const JournalInput = () => (
+const JournalInput = ({ value, onChange }) => (
   <View style={styles.section}>
     <TextInput
       style={styles.input}
       placeholder="Write your thoughts here..."
+      value={value}
+      onChangeText={onChange}
       multiline
       numberOfLines={4}
       placeholderTextColor="#d48ea5"
@@ -31,20 +33,31 @@ const JournalInput = () => (
   </View>
 );
 
-const SubmitButton = () => (
+const SubmitButton = ({ onPress }) => (
   <View style={styles.section}>
-    <Button title="Save Journal" color="#d36ba6" onPress={() => {}} />
+    <Button title="Save Journal" onPress={onPress} color="#d36ba6" />
   </View>
 );
 
 export default function App() {
+  const [journalText, setJournalText] = useState('');
+
+  const handleSave = () => {
+    if (journalText.trim() === '') {
+      Alert.alert('Empty Journal', 'Please write something before saving.');
+    } else {
+      Alert.alert('Saved!', 'Your journal entry has been saved. 📝');
+      setJournalText('');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header />
       <WelcomeMessage />
       <JournalPrompt />
-      <JournalInput />
-      <SubmitButton />
+      <JournalInput value={journalText} onChange={setJournalText} />
+      <SubmitButton onPress={handleSave} />
     </SafeAreaView>
   );
 }
